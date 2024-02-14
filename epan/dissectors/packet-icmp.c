@@ -1655,16 +1655,16 @@ dissect_icmp(tvbuff_t * tvb, packet_info * pinfo, proto_tree * tree, void* data)
 
 	case ICMP_UNREACH:
 		if (icmp_original_dgram_length > 0) {
-			// proto_tree_add_item(icmp_tree, hf_icmp_unused, tvb, 4, 1, ENC_NA);
-			// proto_tree_add_item(icmp_tree, hf_icmp_length, tvb, 5, 1, ENC_BIG_ENDIAN);
-			// ti = proto_tree_add_uint(icmp_tree, hf_icmp_length_original_datagram,
-			// 			 tvb, 5, 1, icmp_original_dgram_length * 4);
-			// proto_item_set_generated(ti);
-			// if (icmp_code == ICMP_FRAG_NEEDED) {
-			// 	proto_tree_add_item(icmp_tree, hf_icmp_mtu, tvb, 6, 2, ENC_BIG_ENDIAN);
-			// } else {
-			// 	proto_tree_add_item(icmp_tree, hf_icmp_unused, tvb, 6, 2, ENC_NA);
-			// }
+			proto_tree_add_item(icmp_tree, hf_icmp_unused, tvb, 4, 1, ENC_NA);
+			proto_tree_add_item(icmp_tree, hf_icmp_length, tvb, 5, 1, ENC_BIG_ENDIAN);
+			ti = proto_tree_add_uint(icmp_tree, hf_icmp_length_original_datagram,
+						 tvb, 5, 1, icmp_original_dgram_length * 4);
+			proto_item_set_generated(ti);
+			if (icmp_code == ICMP_FRAG_NEEDED) {
+				proto_tree_add_item(icmp_tree, hf_icmp_mtu, tvb, 6, 2, ENC_BIG_ENDIAN);
+			} else {
+				proto_tree_add_item(icmp_tree, hf_icmp_unused, tvb, 6, 2, ENC_NA);
+			}
 		} else if (icmp_code == ICMP_FRAG_NEEDED) {
 			proto_tree_add_item(icmp_tree, hf_icmp_unused, tvb, 4, 2, ENC_NA);
 			proto_tree_add_item(icmp_tree, hf_icmp_mtu, tvb, 6, 2, ENC_BIG_ENDIAN);
@@ -1701,12 +1701,12 @@ dissect_icmp(tvbuff_t * tvb, packet_info * pinfo, proto_tree * tree, void* data)
 
 	case ICMP_TIMXCEED:
 		if (icmp_original_dgram_length > 0) {
-			// proto_tree_add_item(icmp_tree, hf_icmp_unused, tvb, 4, 1, ENC_NA);
-			// proto_tree_add_item(icmp_tree, hf_icmp_length, tvb, 5, 1, ENC_BIG_ENDIAN);
-			// ti = proto_tree_add_uint(icmp_tree, hf_icmp_length_original_datagram,
-			// 			 tvb, 5, 1, icmp_original_dgram_length * 4);
-			// proto_item_set_generated(ti);
-			// proto_tree_add_item(icmp_tree, hf_icmp_unused, tvb, 6, 2, ENC_NA);
+			proto_tree_add_item(icmp_tree, hf_icmp_unused, tvb, 4, 1, ENC_NA);
+			proto_tree_add_item(icmp_tree, hf_icmp_length, tvb, 5, 1, ENC_BIG_ENDIAN);
+			ti = proto_tree_add_uint(icmp_tree, hf_icmp_length_original_datagram,
+						 tvb, 5, 1, icmp_original_dgram_length * 4);
+			proto_item_set_generated(ti);
+			proto_tree_add_item(icmp_tree, hf_icmp_unused, tvb, 6, 2, ENC_NA);
 		} else {
 			proto_tree_add_item(icmp_tree, hf_icmp_unused, tvb, 4, 4, ENC_NA);
 		}
@@ -1762,27 +1762,27 @@ dissect_icmp(tvbuff_t * tvb, packet_info * pinfo, proto_tree * tree, void* data)
 			/* No icmp_original_dgram_length is available for redirect message,
 			 * we expect a max of Internet Header + 64 bits of Original Data Datagram */
 			set_actual_length(next_tvb, ((tvb_get_guint8(tvb, 8) & 0x0f) * 4) + 8);
-		// } else if (icmp_original_dgram_length
-		//     && (tvb_reported_length(tvb) >
-		// 	(guint) (8 + icmp_original_dgram_length * 4))
-		//     && (tvb_get_ntohs(tvb, 8 + 2) >
-		// 	(guint) icmp_original_dgram_length * 4)) {
-		// 	set_actual_length(next_tvb,
-		// 			  ((tvb_get_guint8(tvb, 8) & 0x0f) + icmp_original_dgram_length) * 4);
-		// } else {
-		// 	/* There is a collision between RFC 1812 and draft-ietf-mpls-icmp-02.
-		// 	   We don't know how to decode the 128th and following bytes of the ICMP payload.
-		// 	   According to draft-ietf-mpls-icmp-02, these bytes should be decoded as MPLS extensions
-		// 	   whereas RFC 1812 tells us to decode them as a portion of the original packet.
-		// 	   Let the user decide.
+		} else if (icmp_original_dgram_length
+		    && (tvb_reported_length(tvb) >
+			(guint) (8 + icmp_original_dgram_length * 4))
+		    && (tvb_get_ntohs(tvb, 8 + 2) >
+			(guint) icmp_original_dgram_length * 4)) {
+			set_actual_length(next_tvb,
+					  ((tvb_get_guint8(tvb, 8) & 0x0f) + icmp_original_dgram_length) * 4);
+		} else {
+			/* There is a collision between RFC 1812 and draft-ietf-mpls-icmp-02.
+			   We don't know how to decode the 128th and following bytes of the ICMP payload.
+			   According to draft-ietf-mpls-icmp-02, these bytes should be decoded as MPLS extensions
+			   whereas RFC 1812 tells us to decode them as a portion of the original packet.
+			   Let the user decide.
 
-		// 	   Here the user decided to favor MPLS extensions.
-		// 	   Force the IP dissector to decode only the first 128 bytes. */
-		// 	if ((tvb_reported_length(tvb) > 8 + 128) &&
-		// 	    favor_icmp_mpls_ext
-		// 	    && (tvb_get_ntohs(tvb, 8 + 2) > 128)) {
-		// 		set_actual_length(next_tvb, 128);
-		// 	}
+			   Here the user decided to favor MPLS extensions.
+			   Force the IP dissector to decode only the first 128 bytes. */
+			if ((tvb_reported_length(tvb) > 8 + 128) &&
+			    favor_icmp_mpls_ext
+			    && (tvb_get_ntohs(tvb, 8 + 2) > 128)) {
+				set_actual_length(next_tvb, 128);
+			}
 		}
 
 		call_dissector(ip_handle, next_tvb, pinfo, icmp_tree);
@@ -1793,13 +1793,13 @@ dissect_icmp(tvbuff_t * tvb, packet_info * pinfo, proto_tree * tree, void* data)
 		/* Decode MPLS extensions if the payload has at least 128 bytes, and
 		   - the original packet in the ICMP payload has less than 128 bytes, or
 		   - the user favors the MPLS extensions analysis */
-		// if ((tvb_reported_length(tvb) > 8 + 128)
-		//     && (tvb_get_ntohs(tvb, 8 + 2) <= 128
-		// 	|| favor_icmp_mpls_ext)) {
-		// 	int ext_offset = (icmp_original_dgram_length ? icmp_original_dgram_length * 4 : 128) + 8;
-		// 	tvbuff_t * extension_tvb = tvb_new_subset_remaining(tvb, ext_offset);
-		// 	dissect_icmp_extension(extension_tvb, pinfo, icmp_tree, NULL);
-		// }
+		if ((tvb_reported_length(tvb) > 8 + 128)
+		    && (tvb_get_ntohs(tvb, 8 + 2) <= 128
+			|| favor_icmp_mpls_ext)) {
+			int ext_offset = (icmp_original_dgram_length ? icmp_original_dgram_length * 4 : 128) + 8;
+			tvbuff_t * extension_tvb = tvb_new_subset_remaining(tvb, ext_offset);
+			dissect_icmp_extension(extension_tvb, pinfo, icmp_tree, NULL);
+		}
 		break;
 	case ICMP_ECHOREPLY:
 	case ICMP_ECHO:
