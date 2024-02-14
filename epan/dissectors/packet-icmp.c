@@ -1524,25 +1524,23 @@ dissect_icmp(tvbuff_t * tvb, packet_info * pinfo, proto_tree * tree, void* data)
 		    val_to_str(icmp_code, redir_code_str,
 			       "Unknown code: %u");
 		break;
-// GCOV_EXCL_START
-	// case ICMP_ALTHOST:
-	// 	code_str =
-	// 	    val_to_str(icmp_code, alt_host_code_str,
-	// 		       "Unknown code: %u");
-	// 	icmp_original_dgram_length = 0;
-	// 	break;
-	// case ICMP_RTRADVERT:
-	// 	switch (icmp_code) {
-	// 	case 0:	/* Mobile-Ip */
-	// 	case 16:	/* Mobile-Ip */
-	// 		type_str = "Mobile IP Advertisement";
-	// 		break;
-	// 	}		/* switch icmp_code */
-	// 	code_str =
-	// 	    val_to_str(icmp_code, rtradvert_code_str,
-	// 		       "Unknown code: %u");
-	// 	break;
-// GCOV_EXCL_STOP
+	case ICMP_ALTHOST:
+		code_str =
+		    val_to_str(icmp_code, alt_host_code_str,
+			       "Unknown code: %u");
+		icmp_original_dgram_length = 0;
+		break;
+	case ICMP_RTRADVERT:
+		switch (icmp_code) {
+		case 0:	/* Mobile-Ip */
+		case 16:	/* Mobile-Ip */
+			type_str = "Mobile IP Advertisement";
+			break;
+		}		/* switch icmp_code */
+		code_str =
+		    val_to_str(icmp_code, rtradvert_code_str,
+			       "Unknown code: %u");
+		break;
 	case ICMP_TIMXCEED:
 		code_str =
 		    val_to_str(icmp_code, ttl_code_str,
@@ -1553,23 +1551,21 @@ dissect_icmp(tvbuff_t * tvb, packet_info * pinfo, proto_tree * tree, void* data)
 		    val_to_str(icmp_code, par_code_str,
 			       "Unknown code: %u");
 		break;
-// GCOV_EXCL_START
-	// case ICMP_PHOTURIS:
-	// 	code_str =
-	// 	    val_to_str(icmp_code, photuris_code_str,
-	// 		       "Unknown code: %u");
-	// 	break;
-	// case ICMP_EXTECHO:
-	// 	code_str =
-	// 	    val_to_str(icmp_code, ext_echo_req_code_str,
-	// 		       "Unknown code: %u");
-	// 	break;
-	// case ICMP_EXTECHOREPLY:
-	// 	code_str =
-	// 	    val_to_str(icmp_code, ext_echo_reply_code_str,
-	// 		       "Unknown code: %u");
-	// 	break;
-// GCOV_EXCL_STOP
+	case ICMP_PHOTURIS:
+		code_str =
+		    val_to_str(icmp_code, photuris_code_str,
+			       "Unknown code: %u");
+		break;
+	case ICMP_EXTECHO:
+		code_str =
+		    val_to_str(icmp_code, ext_echo_req_code_str,
+			       "Unknown code: %u");
+		break;
+	case ICMP_EXTECHOREPLY:
+		code_str =
+		    val_to_str(icmp_code, ext_echo_reply_code_str,
+			       "Unknown code: %u");
+		break;
 	default:
 		code_str = NULL;
 		break;
@@ -1673,14 +1669,12 @@ dissect_icmp(tvbuff_t * tvb, packet_info * pinfo, proto_tree * tree, void* data)
 		}
 		break;
 
-// GCOV_EXCL_START
-	// case ICMP_RTRADVERT:
-	// 	proto_tree_add_item_ret_uint(icmp_tree, hf_icmp_num_addrs, tvb, 4, 1, ENC_BIG_ENDIAN, &num_addrs);
-	// 	proto_tree_add_item_ret_uint(icmp_tree, hf_icmp_addr_entry_size, tvb, 5, 1, ENC_BIG_ENDIAN, &addr_entry_size);
-	// 	ti = proto_tree_add_item(icmp_tree, hf_icmp_lifetime, tvb, 6, 2, ENC_BIG_ENDIAN);
-	// 	proto_item_append_text(ti, " (%s)", signed_time_secs_to_str(pinfo->pool, tvb_get_ntohs(tvb, 6)));
-	// 	break;
-// GCOV_EXCL_STOP
+	case ICMP_RTRADVERT:
+		proto_tree_add_item_ret_uint(icmp_tree, hf_icmp_num_addrs, tvb, 4, 1, ENC_BIG_ENDIAN, &num_addrs);
+		proto_tree_add_item_ret_uint(icmp_tree, hf_icmp_addr_entry_size, tvb, 5, 1, ENC_BIG_ENDIAN, &addr_entry_size);
+		ti = proto_tree_add_item(icmp_tree, hf_icmp_lifetime, tvb, 6, 2, ENC_BIG_ENDIAN);
+		proto_item_append_text(ti, " (%s)", signed_time_secs_to_str(pinfo->pool, tvb_get_ntohs(tvb, 6)));
+		break;
 
 	case ICMP_PARAMPROB:
 		proto_tree_add_item(icmp_tree, hf_icmp_pointer, tvb, 4, 1, ENC_BIG_ENDIAN);
@@ -1712,26 +1706,24 @@ dissect_icmp(tvbuff_t * tvb, packet_info * pinfo, proto_tree * tree, void* data)
 		}
 		break;
 
-// GCOV_EXCL_START
-	// case ICMP_EXTECHO:
-	// 	proto_tree_add_item(icmp_tree, hf_icmp_ident, tvb, 4, 2, ENC_BIG_ENDIAN);
-	// 	proto_tree_add_item(icmp_tree, hf_icmp_ident_le, tvb, 4, 2, ENC_LITTLE_ENDIAN);
-	// 	proto_tree_add_item(icmp_tree, hf_icmp_ext_echo_seq_num, tvb, 6, 1, ENC_BIG_ENDIAN);
-	// 	proto_tree_add_item(icmp_tree, hf_icmp_ext_echo_req_reserved, tvb, 7, 1, ENC_BIG_ENDIAN);
-	// 	proto_tree_add_item(icmp_tree, hf_icmp_ext_echo_req_local, tvb, 7, 1, ENC_BIG_ENDIAN);
-	// 	break;
+	case ICMP_EXTECHO:
+		proto_tree_add_item(icmp_tree, hf_icmp_ident, tvb, 4, 2, ENC_BIG_ENDIAN);
+		proto_tree_add_item(icmp_tree, hf_icmp_ident_le, tvb, 4, 2, ENC_LITTLE_ENDIAN);
+		proto_tree_add_item(icmp_tree, hf_icmp_ext_echo_seq_num, tvb, 6, 1, ENC_BIG_ENDIAN);
+		proto_tree_add_item(icmp_tree, hf_icmp_ext_echo_req_reserved, tvb, 7, 1, ENC_BIG_ENDIAN);
+		proto_tree_add_item(icmp_tree, hf_icmp_ext_echo_req_local, tvb, 7, 1, ENC_BIG_ENDIAN);
+		break;
 
-	// case ICMP_EXTECHOREPLY:
-	// 	proto_tree_add_item(icmp_tree, hf_icmp_ident, tvb, 4, 2, ENC_BIG_ENDIAN);
-	// 	proto_tree_add_item(icmp_tree, hf_icmp_ident_le, tvb, 4, 2, ENC_LITTLE_ENDIAN);
-	// 	proto_tree_add_item(icmp_tree, hf_icmp_ext_echo_seq_num, tvb, 6, 1, ENC_BIG_ENDIAN);
-	// 	proto_tree_add_item(icmp_tree, hf_icmp_ext_echo_rsp_state, tvb, 7, 1, ENC_BIG_ENDIAN);
-	// 	proto_tree_add_item(icmp_tree, hf_icmp_ext_echo_rsp_reserved, tvb, 7, 1, ENC_BIG_ENDIAN);
-	// 	proto_tree_add_item(icmp_tree, hf_icmp_ext_echo_rsp_active, tvb, 7, 1, ENC_BIG_ENDIAN);
-	// 	proto_tree_add_item(icmp_tree, hf_icmp_ext_echo_rsp_ipv4, tvb, 7, 1, ENC_BIG_ENDIAN);
-	// 	proto_tree_add_item(icmp_tree, hf_icmp_ext_echo_rsp_ipv6, tvb, 7, 1, ENC_BIG_ENDIAN);
-	// 	break;
-// GCOV_EXCL_STOP
+	case ICMP_EXTECHOREPLY:
+		proto_tree_add_item(icmp_tree, hf_icmp_ident, tvb, 4, 2, ENC_BIG_ENDIAN);
+		proto_tree_add_item(icmp_tree, hf_icmp_ident_le, tvb, 4, 2, ENC_LITTLE_ENDIAN);
+		proto_tree_add_item(icmp_tree, hf_icmp_ext_echo_seq_num, tvb, 6, 1, ENC_BIG_ENDIAN);
+		proto_tree_add_item(icmp_tree, hf_icmp_ext_echo_rsp_state, tvb, 7, 1, ENC_BIG_ENDIAN);
+		proto_tree_add_item(icmp_tree, hf_icmp_ext_echo_rsp_reserved, tvb, 7, 1, ENC_BIG_ENDIAN);
+		proto_tree_add_item(icmp_tree, hf_icmp_ext_echo_rsp_active, tvb, 7, 1, ENC_BIG_ENDIAN);
+		proto_tree_add_item(icmp_tree, hf_icmp_ext_echo_rsp_ipv4, tvb, 7, 1, ENC_BIG_ENDIAN);
+		proto_tree_add_item(icmp_tree, hf_icmp_ext_echo_rsp_ipv6, tvb, 7, 1, ENC_BIG_ENDIAN);
+		break;
 	}
 
 
@@ -1880,24 +1872,22 @@ dissect_icmp(tvbuff_t * tvb, packet_info * pinfo, proto_tree * tree, void* data)
 		}
 		break;
 
-// GCOV_EXCL_START
-	// case ICMP_RTRADVERT:
-	// 	if (addr_entry_size == 2) {
-	// 		for (i = 0; i < num_addrs; i++) {
-	// 			proto_tree_add_item(icmp_tree, hf_icmp_router_address, tvb, 8 + (i * 8), 4, ENC_NA);
-	// 			proto_tree_add_item(icmp_tree, hf_icmp_pref_level, tvb, 12 + (i * 8), 4, ENC_NA);
-	// 		}
-	// 		if ((icmp_code == 0) || (icmp_code == 16)) {
-	// 			/* Mobile-Ip */
-	// 			dissect_mip_extensions(tvb, 8 + i * 8,
-	// 					       icmp_tree);
-	// 		}
-	// 	} else {
-	// 		call_data_dissector(tvb_new_subset_remaining(tvb, 8),
-	// 			       pinfo, icmp_tree);
-	// 	}
-	// 	break;
-// GCOV_EXCL_STOP
+	case ICMP_RTRADVERT:
+		if (addr_entry_size == 2) {
+			for (i = 0; i < num_addrs; i++) {
+				proto_tree_add_item(icmp_tree, hf_icmp_router_address, tvb, 8 + (i * 8), 4, ENC_NA);
+				proto_tree_add_item(icmp_tree, hf_icmp_pref_level, tvb, 12 + (i * 8), 4, ENC_NA);
+			}
+			if ((icmp_code == 0) || (icmp_code == 16)) {
+				/* Mobile-Ip */
+				dissect_mip_extensions(tvb, 8 + i * 8,
+						       icmp_tree);
+			}
+		} else {
+			call_data_dissector(tvb_new_subset_remaining(tvb, 8),
+				       pinfo, icmp_tree);
+		}
+		break;
 
 	case ICMP_TSTAMP:
 	case ICMP_TSTAMPREPLY:
@@ -1925,15 +1915,15 @@ dissect_icmp(tvbuff_t * tvb, packet_info * pinfo, proto_tree * tree, void* data)
 	case ICMP_MASKREPLY:
 		proto_tree_add_item(icmp_tree, hf_icmp_address_mask, tvb, 8, 4, ENC_BIG_ENDIAN);
 		break;
-// GCOV_EXCL_START
-	// case ICMP_EXTECHO:
-	// 	if (tvb_reported_length(tvb) > 8) {
-	// 		tvbuff_t * extension_tvb = tvb_new_subset_remaining(tvb, 8);
-	// 		dissect_icmp_extension(extension_tvb, pinfo, icmp_tree, NULL);
-	// 	}
-	// 	break;
+
+	case ICMP_EXTECHO:
+		if (tvb_reported_length(tvb) > 8) {
+			tvbuff_t * extension_tvb = tvb_new_subset_remaining(tvb, 8);
+			dissect_icmp_extension(extension_tvb, pinfo, icmp_tree, NULL);
+		}
+		break;
 	}
-// GCOV_EXCL_STOP
+
 	if (!PINFO_FD_VISITED(pinfo)) {
 		icmp_info_t *p_icmp_info = wmem_new(wmem_file_scope(), icmp_info_t);
 		p_icmp_info->type = icmp_type;
