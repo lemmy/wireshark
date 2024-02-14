@@ -1624,7 +1624,7 @@ dissect_icmp(tvbuff_t * tvb, packet_info * pinfo, proto_tree * tree, void* data)
 		   truncated, and isn't the payload of an error packet, so we can checksum
 		   it. */
 		proto_tree_add_checksum(icmp_tree, tvb, 2, hf_icmp_checksum, hf_icmp_checksum_status, &ei_icmp_checksum, pinfo, ip_checksum_tvb(tvb, 0, reported_length),
-								ENC_BIG_ENDIAN, PROTO_CHECKSUM_VERIFY|PROTO_CHECKSUM_IN_CKSUM);
+								ENC_BIG_ENDIAN, PROTO_CHECKSUM_NO_FLAGS);
 	} else {
 		checksum_item = proto_tree_add_checksum(icmp_tree, tvb, 2, hf_icmp_checksum, hf_icmp_checksum_status, &ei_icmp_checksum, pinfo, 0,
 								ENC_BIG_ENDIAN, PROTO_CHECKSUM_NO_FLAGS);
