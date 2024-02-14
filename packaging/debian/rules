@@ -5,7 +5,7 @@
 # Rewritten to use dh, by Balint Reczey
 
 # Uncomment this to turn on verbose mode.
-#export DH_VERBOSE=1
+export DH_VERBOSE=1
 
 distrelease  := $(shell lsb_release -cs)
 ifeq ($(distrelease),n/a)
