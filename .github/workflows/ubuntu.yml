@@ -41,7 +41,7 @@ jobs:
           tools/make-version.py --set-release .
           export DEB_BUILD_OPTIONS="nocheck parallel=$(( $(getconf _NPROCESSORS_ONLN) + 2 ))"
           export DH_QUIET=1
-          export MAKEFLAGS=--silent
+          export MAKEFLAGS="--silent --coverage"
           dpkg-buildpackage -b -us -uc -jauto
       - name: Move deb packages
         run: |
